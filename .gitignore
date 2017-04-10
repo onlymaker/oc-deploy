@@ -1,0 +1,6 @@
+/*
+!/.gitignore
+!/mariadb
+!/nginx
+!/docker-compose.yml
+!/startup

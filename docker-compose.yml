@@ -1,0 +1,89 @@
+version: '2'
+services:
+    mariadb:
+        image: mariadb:10.1.21
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        volumes:
+            - ./mariadb:/etc/mysql/conf.d
+            - ./data:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.6.6-2
+        restart: always
+        environment:
+            PMA_HOST: mariadb
+            PMA_PORT: '3306'
+        links:
+            - mariadb:mariadb
+        depends_on:
+            - mariadb
+    memcache:
+        image: memcached:1.4.35-alpine
+        restart: always
+    oce:
+        image: registry.aliyuncs.com/syncxplus/php:7.1.3
+        restart: always
+        volumes:
+            - ./oce:/var/www/html
+            - ./opencart/upload/system/storage/download:/var/www/html/data
+            - ./opencart/upload/system/storage/logs:/var/www/html/src/log
+        links:
+            - mariadb:mariadb
+            - memcache:memcache
+        depends_on:
+            - mariadb
+            - memcache
+    opencart:
+        image: registry.aliyuncs.com/syncxplus/php:5.6.30
+        restart: always
+        volumes:
+            - ./opencart/upload:/var/www/html
+        links:
+            - mariadb:mariadb
+            - memcache:memcache
+            - oce:oce
+        depends_on:
+            - mariadb
+            - memcache
+            - oce
+    pure-ftpd:
+        image: stilliard/pure-ftpd:hardened
+        restart: always
+        ports:
+            - '21:21'
+            - '30000-30100:30000-30100'
+        environment:
+            PUBLICHOST: ${PUBLIC_IP}
+        volumes:
+            - ./opencart/upload:/home/ftpusers/www
+            - ./opencart/upload/image/catalog/onlymaker:/home/ftpusers/onlymaker
+    leo:
+        image: registry.aliyuncs.com/syncxplus/gradle:2.14.1
+        restart: always
+        volumes:
+            - ./gradle/caches:/root/.gradle/caches
+            - ./projects/leo:/usr/bin/app
+        links:
+            - mariadb:mariadb
+        depends_on:
+            - mariadb
+        entrypoint: /bin/bash
+        command: run.sh
+    nginx:
+        image: registry.aliyuncs.com/syncxplus/nginx:1.11.10
+        restart: always
+        ports:
+            - '80:80'
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        links:
+            - leo:leo
+            - oce:oce
+            - opencart:opencart
+            - phpmyadmin:phpmyadmin
+        depends_on:
+            - leo
+            - oce
+            - opencart
+            - phpmyadmin
