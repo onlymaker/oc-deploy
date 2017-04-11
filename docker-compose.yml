@@ -27,6 +27,7 @@ services:
         volumes:
             - ./oce:/var/www/html
             - ./opencart/upload/system/storage/download:/var/www/html/data
+            - ./opencart/upload/image:/var/www/html/image
             - ./opencart/upload/system/storage/logs:/var/www/html/src/log
         links:
             - mariadb:mariadb
