@@ -63,7 +63,7 @@ services:
         restart: always
         volumes:
             - ./gradle/caches:/root/.gradle/caches
-            - ./projects/leo:/usr/bin/app
+            - ./leo:/usr/bin/app
         links:
             - mariadb:mariadb
         depends_on:
