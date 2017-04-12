@@ -3,5 +3,7 @@ workdir=$(cd `dirname ${0}`; pwd)
 docker-compose up -d
 docker exec -it `basename ${workdir}`_oce_1 chown -R www-data:www-data /var/www/html
 docker exec -it `basename ${workdir}`_opencart_1 chown -R www-data:www-data /var/www/html
+docker exec -it `basename ${workdir}`_pure-ftpd_1 chmod -R ug+w /home/ftpusers/
+docker exec -it `basename ${workdir}`_pure-ftpd_1 usermod -a -G www-data ftpuser
 docker exec -it `basename ${workdir}`_pure-ftpd_1 pure-pw useradd www -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/www
 docker exec -it `basename ${workdir}`_pure-ftpd_1 pure-pw useradd onlymaker -f /etc/pure-ftpd/passwd/pureftpd.passwd -m -u ftpuser -d /home/ftpusers/onlymaker
