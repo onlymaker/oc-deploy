@@ -22,7 +22,7 @@ services:
         image: memcached:1.4.35-alpine
         restart: always
     oce:
-        image: registry.aliyuncs.com/syncxplus/php:7.1.3
+        image: registry.aliyuncs.com/syncxplus/php:7.1.4
         restart: always
         volumes:
             - ./oce:/var/www/html
@@ -40,6 +40,9 @@ services:
         restart: always
         volumes:
             - ./opencart/upload:/var/www/html
+        expose:
+            - '80'
+            - '443'
         links:
             - mariadb:mariadb
             - memcache:memcache
@@ -76,8 +79,10 @@ services:
         restart: always
         ports:
             - '80:80'
+            - '443:443'
         volumes:
             - ./nginx:/etc/nginx/conf.d
+            - ./letsencrypt:/etc/letsencrypt
         links:
             - leo:leo
             - oce:oce
