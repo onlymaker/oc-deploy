@@ -1,9 +1,26 @@
 #!/usr/bin/env bash
 
+nginx=`docker ps|grep nginx|awk '{print $NF}'`
+
+docker stop $nginx
+
 workdir=$(cd `dirname ${0}`; pwd)
 
-docker run --rm -p 80:80 -p 443:443 \
-    -v ${workdir}/letsencrypt:/etc/letsencrypt \
-    quay.io/letsencrypt/letsencrypt:latest auth \
-    --standalone -m jibo@onlymaker.com --agree-tos \
-    -d onlymaker.com -d www.onlymaker.com
+if [ "$1"x == createx ]; then
+    echo create
+    docker run --rm -p 80:80 -p 443:443 \
+        -v ${workdir}/letsencrypt:/etc/letsencrypt \
+        quay.io/letsencrypt/letsencrypt:latest auth \
+        --standalone -m jibo@onlymaker.com --agree-tos \
+        -d onlymaker.com
+elif [ "$1"x == renewx ] || [ "$1"x == x ]; then
+    echo renew
+    docker run --rm -p 80:80 -p 443:443 \
+        -v ${workdir}/letsencrypt:/etc/letsencrypt \
+        quay.io/letsencrypt/letsencrypt:latest renew \
+        --standalone
+else
+    echo Unknown options $1
+fi
+
+docker start $nginx
