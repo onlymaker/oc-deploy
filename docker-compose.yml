@@ -6,8 +6,8 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         volumes:
-            - ./mariadb:/etc/mysql/conf.d
-            - ./data:/var/lib/mysql
+            - ./mariadb/conf.d:/etc/mysql/conf.d
+            - ./mariadb/data:/var/lib/mysql
     phpmyadmin:
         image: phpmyadmin/phpmyadmin:4.6.6-2
         restart: always
@@ -54,11 +54,9 @@ services:
     pure-ftpd:
         image: stilliard/pure-ftpd:hardened
         restart: always
-        ports:
-            - '21:21'
-            - '30000-30100:30000-30100'
         environment:
             PUBLICHOST: ${PUBLIC_IP}
+        network_mode: host
         volumes:
             - ./opencart/upload:/home/ftpusers/www
             - ./opencart/upload/image/catalog/onlymaker:/home/ftpusers/onlymaker

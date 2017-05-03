@@ -1,8 +1,1 @@
 /*
-!/.gitignore
-!/mariadb
-!/nginx
-!/docker-compose.yml
-!/refresh
-!/startup
-!/certbot
