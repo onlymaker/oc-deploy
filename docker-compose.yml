@@ -22,7 +22,7 @@ services:
         image: memcached:1.4.35-alpine
         restart: always
     oce:
-        image: registry.aliyuncs.com/syncxplus/php:7.1.4
+        image: registry.aliyuncs.com/syncxplus/php:7.1.7
         restart: always
         volumes:
             - ./oce:/var/www/html
@@ -36,7 +36,7 @@ services:
             - mariadb
             - memcache
     opencart:
-        image: registry.aliyuncs.com/syncxplus/php:5.6.30
+        image: registry.aliyuncs.com/syncxplus/php:5.6.31
         restart: always
         volumes:
             - ./opencart/upload:/var/www/html
