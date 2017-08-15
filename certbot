@@ -10,7 +10,7 @@ if [ "$1"x == createx ]; then
     echo create
     docker run --rm -p 80:80 -p 443:443 \
         -v ${workdir}/letsencrypt:/etc/letsencrypt \
-        quay.io/letsencrypt/letsencrypt:latest auth \
+        quay.io/letsencrypt/letsencrypt:latest certonly \
         --standalone -m jibo@onlymaker.com --agree-tos \
         -d onlymaker.com
 elif [ "$1"x == renewx ] || [ "$1"x == x ]; then
